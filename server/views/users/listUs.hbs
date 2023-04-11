@@ -1,0 +1,37 @@
+{{>header}}
+
+<table class="table table-sm table-bordered">
+  <h5>Danh sách nhân viên</h5>
+  <thead class="table-info">
+    <tr class="text-uppercase text-center">
+      <th>Hình ảnh</th>
+      <th>Họ và tên</th>
+      <th>Email</th>
+      <th>Mật khẩu</th>
+      <th>Số điện thoại</th>
+      <th>Địa chỉ</th>
+      <th>Hành động</th>
+    </tr>
+  </thead>
+
+  {{#each users}}
+  <tr class="align-middle">
+    <td class="align-center"><img src="/img/users/{{this.imageURL}}" width="80" /></td>
+    <td class="align-center">{{this.fullname}}</td>
+    <td>{{this.email}}
+    </td>
+    <td>{{this.password}}</td>
+    <td>{{this.phone}}</td>
+    <td>{{this.address}}</td>
+    <td>
+      <div class="d-flex justify-content-around">
+        <a href="/users/edit/{{this._id}}" class="btn btn-success btn-sm">Sửa</a>
+        <a href="/users/delete/{{this._id}}" class="btn btn-danger btn-sm">Xóa</a>
+      </div>
+    </td>
+  </tr>
+  {{/each}}
+
+</table>
+<!--END FORM-->
+{{>footer}}

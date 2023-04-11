@@ -1,0 +1,49 @@
+{{>header}}
+<div class="container-fluid">
+  <h4 class="text-primary">{{viewTitle}}</h4>
+  <form action="/users/add" method="POST" autocomplete="false" enctype="multipart/form-data">
+    <input type="hidden" name="id" value="{{user._id}}" />
+    <div class="mb-3">
+      <label for="" class="form-label">Họ và tên</label>
+      <input type="text" name="fullname" id="fullname" class="form-control" placeholder="họ tên đầy đủ"
+        value="{{user.fullname}}" />
+
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="" class="form-label">Email</label>
+        <input type="text" name="email" id="email" class="form-control" placeholder="email của bạn"
+          value="{{user.email}}" />
+      </div>
+      <div class="col-md-6">
+        <label for="" class="form-label">Hình ảnh</label>
+        <input type="file" name="imageURL" id="imgUser" class="form-control" placeholder="Chỉ chọn 1 ảnh" />
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="" class="form-label">Mật khẩu</label>
+      <input type="text" name="password" id="password" class="form-control" placeholder="ít nhất 4 kí tự"
+        value="{{user.password}} " />
+
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="" class="form-label">Địa chỉ</label>
+        <input type="text" name="address" id="address" class="form-control" placeholder="Địa chỉ liên hệ"
+          value="{{user.address}}" />
+      </div>
+
+      <div class="col-md-6">
+        <label for="" class="form-label">Số điện thoại</label>
+        <input type="text" name="phone" id="phone" class="form-control" placeholder="Số điện thoại liên hệ"
+          value="{{user.phone}}" />
+      </div>
+    </div>
+    <div class="d-grid gap-2 col-6 mx-auto mt-4">
+      <button class="btn btn-primary" type="submit">Thêm mới</button>
+    </div>
+  </form>
+
+</div>
+
+{{>footer}}

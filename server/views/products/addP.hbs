@@ -1,0 +1,49 @@
+{{>header}}
+<div class="container-fluid">
+    <h4 class="text-primary">{{viewTitle}}</h4>
+    <form action="/products/add" method="POST" autocomplete="false" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="{{product._id}}" />
+        <div class="row my-4">
+            <div class="col-md-6">
+                <label for="" class="form-label">Tên sản phẩm</label>
+                <input type="text" name="name" id="fullname" class="form-control" placeholder="tên sản phẩm"
+                    value="{{product.name}}" />
+            </div>
+            <div class="col-md-6">
+                <label for="" class="form-label">Đánh giá ban đầu</label>
+                <input type="number" name="rating" step="0.5" min="1" max="5" class="form-control">
+            </div>
+        </div>
+        <div class="row my-4">
+
+            <div class="col-md-6">
+                <label for="" class="form-label">Giá sản phẩm</label>
+                <input type="number" name="price" id="price" class="form-control" placeholder="Giá sản phẩm"
+                    value="{{product.price}}" />
+            </div>
+        </div>
+        <div class="row my-4">
+            <div class="col-md-6">
+                <label for="" class="form-label">số lượng</label>
+                <input type="number" name="countInStock" id="countInStock" class="form-control"
+                    placeholder="số lượng sản phẩm" value="{{product.countInStock}}" />
+            </div>
+            <div class="col-md-6">
+                <label for="" class="form-label">Hình ảnh</label>
+                <input type="file" name="image" id="imgUser" class="form-control" placeholder="Chỉ chọn 1 ảnh" />
+            </div>
+        </div>
+        <div class="row my-4">
+            <div class="col-md-12">
+                <label for="" class="form-label">Chi tiết sản phẩm</label>
+                <textarea class="form-control" name="description" id="description" rows="7"
+                    value="{{product.description}}"></textarea>
+            </div>
+        </div>
+        <div class="d-grid gap-2 col-6 mx-auto mt-4">
+            <button class="btn btn-primary" type="submit">Thêm mới</button>
+        </div>
+    </form>
+
+</div>
+{{>footer}}

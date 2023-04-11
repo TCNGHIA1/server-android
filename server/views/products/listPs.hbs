@@ -1,0 +1,46 @@
+{{>header}}
+<div class="row">
+  <div class="col-sm-6">
+    <h4>Danh sách sản phẩm</h4>
+  </div>
+  <div class="col-sm-6">
+    <form class="d-flex" role="search">
+      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+  </div>
+</div>
+<div class="row my-3">
+  {{!-- product single --}}
+  {{#each products}}
+  <div class="card col-sm-3 m-3" style="width: 18rem;">
+    <div class="card-img-box text-center">
+      {{#if this.image}}
+      <img class="card-img-top" src="{{this.image}}" alt="">
+      {{else }}
+      <img class="card-img-top" src="/img/product/product01.png">
+      {{/if}}
+    </div>
+
+    <div class="card-body">
+      <h5 class="card-title">{{this.name}}</h5>
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <h6 class="card-subtitle">đánh giá: <span style="color:#d6ba00">{{this.rating}}</span> sao</h6>
+      </li>
+      <li class="list-group-item card-subtitle">
+        <h6 class="card-subtitle">giá tiền: <span style="color:crimson">{{this.price}}</span> đồng</h6>
+      </li>
+      <li class=" list-group-item">Số lượng: {{this.countInStock}}</li>
+    </ul>
+    <div class="card-body text-center">
+      <a class="btn btn-success btn-sm mx-3">Sửa</a>
+      <a class="btn btn-danger btn-sm mx-3">Xóa</a>
+    </div>
+  </div>
+  {{/each }}
+
+</div>
+
+{{>footer}}
