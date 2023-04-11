@@ -48,4 +48,4 @@ app.get("/product", function (req, res) {
 //
 
 const productsControllter = require("./controller/productsControllter");
-app.use("/client/products", productsControllter);
+app.use("/client/product", productsControllter);

@@ -11,15 +11,28 @@ import React, { useCallback, useEffect, useState } from "react";
 import data from "../../database/dbProducts";
 import COLORS from "../components/Colors";
 import Rating from "../components/Rating";
+import request from "../api/request";
 const SingleProduct = ({ route }) => {
+  const id = route.params.id;
+
   const [product, setProduct] = useState({});
   const { width, height } = useWindowDimensions();
-  useEffect(() => {
-    const demo = data[route.params.id];
-    setProduct(demo);
-    console.log(demo);
-  }, []);
 
+  //get item product
+  const getItem = async () => {
+    try {
+      const req = await request.get(`client/product/${route.params.id}`);
+      setProduct(req.data);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+  useEffect(() => {
+    console.log(id);
+    getItem();
+    console.log(product.image);
+  }, []);
+  //show more text
   const [textShown, setTextShown] = useState(false); //To show ur remaining Text
   const [lengthMore, setLengthMore] = useState(false); //to show the "Read more & Less Line"
   const toggleNumberOfLines = () => {
@@ -34,15 +47,14 @@ const SingleProduct = ({ route }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.card_image}>
-        {/* {product.image ? (
-          <Image source={product.image} style={styles.image} />
-        ) : 
-        ( */}
-        <Image
-          source={require("../images/products/product03.png")}
-          style={styles.image}
-        />
-        {/* )} */}
+        {product.image ? (
+          <Image source={{ uri: product.image }} style={styles.image} />
+        ) : (
+          <Image
+            source={require("../images/products/product03.png")}
+            style={styles.image}
+          />
+        )}
       </View>
       <Text style={styles.title}>Thông tin sản phẩm</Text>
       {/* Detail product */}
@@ -122,8 +134,8 @@ const styles = StyleSheet.create({
     maxHeight: 260,
   },
   image: {
-    maxHeight: 250,
-    maxWidth: 250,
+    height: 250,
+    width: 250,
     resizeMode: "contain",
   },
   detail: {

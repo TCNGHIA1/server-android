@@ -19,20 +19,16 @@ const Home = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const { width, height } = useWindowDimensions();
   useEffect(() => {
-    const dataProdcut = () => {
-      setProducts(data);
-    };
-    dataProdcut();
-    // getProdcuts();
+    getProdcuts();
   }, []);
-  // const getProdcuts = async () => {
-  //   try {
-  //     const res = await request.get("client/products");
-  //     setProducts(res.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const getProdcuts = async () => {
+    try {
+      const req = await request.get("client/product/getAll");
+      setProducts(req.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="default" />

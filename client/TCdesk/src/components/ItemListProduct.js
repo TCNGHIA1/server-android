@@ -7,14 +7,13 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import COLORS from "./Colors";
 import Rating from "./Rating";
 import { useNavigation } from "@react-navigation/native";
 
 const ItemListProduct = ({ item, onPress }) => {
   const { width, height } = useWindowDimensions();
-
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -47,7 +46,10 @@ const ItemListProduct = ({ item, onPress }) => {
           }}
         >
           {item.image ? (
-            <Image source={item.image} />
+            <Image
+              source={{ uri: item.image }}
+              style={{ width: 120, height: 120, resizeMode: "contain" }}
+            />
           ) : (
             <Image
               source={require("../images/products/product02.png")}
