@@ -20,7 +20,7 @@ const Home = ({ navigation }) => {
   const { width, height } = useWindowDimensions();
   useEffect(() => {
     getProdcuts();
-  }, []);
+  }, [products]);
   const getProdcuts = async () => {
     try {
       const req = await request.get("client/product/getAll");

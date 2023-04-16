@@ -18,7 +18,7 @@
       {{#if this.image}}
       <img class="card-img-top" src="{{this.image}}" alt="">
       {{else }}
-      <img class="card-img-top" src="/img/product/product01.png">
+      <img class="card-img-top" src="/img/no_image.png" sizes="150">
       {{/if}}
     </div>
 
@@ -35,8 +35,8 @@
       <li class=" list-group-item">Số lượng: {{this.countInStock}}</li>
     </ul>
     <div class="card-body text-center">
-      <a class="btn btn-success btn-sm mx-3">Sửa</a>
-      <a class="btn btn-danger btn-sm mx-3">Xóa</a>
+      <a href="/products/edit/{{this._id}}" class="btn btn-success btn-sm">Sửa</a>
+      <a href="/products/delete/{{this._id}}" class="btn btn-danger btn-sm">Xóa</a>
     </div>
   </div>
   {{/each }}

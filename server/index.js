@@ -6,6 +6,14 @@ const mongoose = require("mongoose");
 const useRoute = require("./routes/userRoute");
 const productRoute = require("./routes/productRoute");
 const app = express();
+
+const bodyParser = require("body-parser");
+const path = require("path");
+//multer and body-parser
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(bodyParser.json());
+
 //change .handlebars -> .hbs
 app.engine("hbs", exphbs.engine({ defaultLayout: "main", extname: ".hbs" }));
 app.set("view engine", "hbs");
@@ -28,8 +36,6 @@ mongoose
     console.log(err.message);
   });
 
-app.use("/users", useRoute);
-app.use("/products", productRoute);
 //get URL
 app.get("/signIn", function (req, res) {
   res.render("auth/signIn");
@@ -38,14 +44,29 @@ app.get("/signUp", function (req, res) {
   res.render("auth/signUp");
 });
 
-app.get("/home", function (req, res) {
-  res.render("index");
-});
+//route
+const reqFile = require("./routes/middleware");
+const route = express.Router();
+route.use(reqFile);
 
-app.get("/product", function (req, res) {
-  res.render("product");
-});
 //
+app.get("/home", function (req, res) {
+  if (!req.body.id) {
+    res.redirect("/signIn");
+  } else {
+    res.render("index");
+  }
+});
+//quan li nguoi dung
+app.use("/users", useRoute);
+
+//quan li san pham
+app.use("/products", productRoute);
 
 const productsControllter = require("./controller/productsControllter");
 app.use("/client/product", productsControllter);
+// app.use("/", route);
+
+//đăng nhập
+const auth = require("./routes/auth");
+app.use("/auth", auth);

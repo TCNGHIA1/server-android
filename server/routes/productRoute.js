@@ -29,11 +29,13 @@ app.get("/", (req, res) => {
 });
 //add
 const addproduct = (file, req, res) => {
+  let rate = req.body.rating ? req.body.rating : 0;
+  let price = req.body.price ? req.body.price : 0;
   const pd = new productModel({
     name: req.body.name,
     image: file,
-    rating: parseInt(req.body.rating),
-    price: parseInt(req.body.price),
+    rating: parseFloat(rate),
+    price: parseInt(price),
     description: req.body.description,
     countInStock: parseInt(req.body.countInStock),
   });
@@ -48,49 +50,63 @@ const addproduct = (file, req, res) => {
     res.status(500).send(err);
   }
 };
-const updateproduct = async (file, req, res) => {
-  try {
-    const product = await productModel.findByIdAndUpdate(
-      req.body.id,
-      {
-        name: req.body.name,
-        image: file,
-        rating: parseInt(req.body.rating),
-        price: parseInt(req.body.price),
-        description: req.body.description,
-        countInStock: parseInt(req.body.countInStock),
-      },
-      {
-        new: true,
-        upsert: true,
-      }
-    );
-    product.save();
-    res.redirect("/products/list");
-  } catch (err) {
-    console.log(err.message);
-  }
+const updateproduct = (file, req, res) => {
+  //Tìm product
+  productModel
+    .findById(req.body.id)
+    .then((product) => {
+      //upload hình ảnh
+      file = file ? file : product.image;
+      productModel.updateOne(
+        { _id: product._id },
+        {
+          name: req.body.name,
+          image: file,
+          rating: parseFloat(req.body.rating),
+          price: parseInt(req.body.price),
+          description: req.body.description,
+          countInStock: parseInt(req.body.countInStock),
+        },
+        {
+          new: true,
+          upsert: true,
+        }
+      );
+    })
+    .then(() => {
+      res.redirect("/products/list");
+    })
+    .catch((err) => console.log(err.message));
 };
+
 //add product
 app.post("/add", (req, res) => {
-  const file = req.files.image;
-  cloudinary.uploader.upload(
-    file.tempFilePath,
-    { folder: "TCdesk/product" },
-    (err, result) => {
-      if (err) {
-        return res.send(err.message);
-      }
-      if (req.body.id == "") {
-        addproduct(result.url, req, res);
-      } else {
-        updateproduct(result.url, req, res);
-      }
+  if (!req.files) {
+    if (req.body.id == "") {
+      addproduct("", req, res);
+    } else {
+      updateproduct("", req, res);
     }
-  );
+  } else {
+    const file = req.files.image;
+    cloudinary.uploader.upload(
+      file.tempFilePath,
+      { folder: "TCdesk/product" },
+      (err, result) => {
+        if (err) {
+          return res.send(err.message);
+        }
+        if (req.body.id == "") {
+          addproduct(result.url, req, res);
+        } else {
+          updateproduct(result.url, req, res);
+        }
+      }
+    );
+  }
 });
 //update product
-app.put("/edit/:id", (req, res) => {
+app.get("/edit/:id", (req, res) => {
   productModel
     .findOne({ _id: req.params.id })
     .then((product) => {
@@ -107,7 +123,7 @@ app.put("/edit/:id", (req, res) => {
     });
 });
 //delete product
-app.delete("/delete/:id", (req, res) => {
+app.get("/delete/:id", (req, res) => {
   productModel
     .findByIdAndDelete(req.params.id)
     .then(() => res.redirect("/products/list"))
