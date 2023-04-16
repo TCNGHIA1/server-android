@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   ScrollView,
   StyleSheet,
@@ -12,25 +13,41 @@ import data from "../../database/dbProducts";
 import COLORS from "../components/Colors";
 import Rating from "../components/Rating";
 import request from "../api/request";
+import AppLoading from "../components/AppLoading";
 const SingleProduct = ({ route }) => {
   const id = route.params.id;
 
-  const [product, setProduct] = useState({});
+  const [product, setProduct] = useState({
+    image: "",
+    name: "",
+    price: 0,
+    rating: 0,
+    description: "",
+  });
   const { width, height } = useWindowDimensions();
-
+  const [loadding, setLoadding] = useState(true);
   //get item product
+  const time = setTimeout(() => {
+    setLoadding(false);
+  }, 1500);
+
   const getItem = async () => {
     try {
       const req = await request.get(`client/product/${route.params.id}`);
-      setProduct(req.data);
+      if (req.data) {
+        setProduct(req.data);
+        time;
+      } else {
+        setLoadding(true);
+      }
     } catch (err) {
       console.log(err.message);
     }
   };
   useEffect(() => {
-    console.log(id);
+    setLoadding(true);
     getItem();
-    console.log(product.image);
+    return clearTimeout(time);
   }, []);
   //show more text
   const [textShown, setTextShown] = useState(false); //To show ur remaining Text
@@ -44,77 +61,106 @@ const SingleProduct = ({ route }) => {
     setLengthMore(e.nativeEvent.lines.length >= 3); //to check the text is more than 4 lines or not
     // console.log(e.nativeEvent);
   }, []);
+
+  //click button cart
+  const handleCart = () => {
+    Alert.alert("Thực hiên công việc đặt hàng!");
+  };
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.card_image}>
-        {product.image ? (
-          <Image source={{ uri: product.image }} style={styles.image} />
-        ) : (
-          <Image
-            source={require("../images/products/product03.png")}
-            style={styles.image}
-          />
-        )}
-      </View>
-      <Text style={styles.title}>Thông tin sản phẩm</Text>
-      {/* Detail product */}
-      <View style={styles.detail}>
-        <View style={[styles.card, { width: "95%" }]}>
-          <View style={[styles.row, styles.around]}>
-            <Text style={[styles.card_title, styles.flex]}>Tên sản phẩm:</Text>
-            <Text style={[styles.card_title, styles.flex, styles.text_center]}>
-              {product.name}
-            </Text>
+    <View style={{ flex: 1 }}>
+      {loadding ? (
+        <AppLoading />
+      ) : (
+        <ScrollView contentContainerStyle={styles.container}>
+          <View style={styles.card_image}>
+            {product.image ? (
+              <Image source={{ uri: product.image }} style={styles.image} />
+            ) : (
+              <Image
+                source={require("../images/no_image.png")}
+                style={styles.image}
+              />
+            )}
           </View>
-          <View style={[styles.row, styles.around]}>
-            <Text style={[styles.card_title, styles.flex]}>Giá tiền:</Text>
-            <Text style={[styles.card_price, styles.flex, styles.text_center]}>
-              {product.price} đồng
-            </Text>
+          <Text style={styles.title}>Thông tin sản phẩm</Text>
+          {/* Detail product */}
+          <View style={styles.detail}>
+            <View style={[styles.card, { width: "95%" }]}>
+              <View style={[styles.row, styles.around]}>
+                <Text style={[styles.card_title, styles.flex]}>
+                  Tên sản phẩm:
+                </Text>
+                <Text
+                  style={[styles.card_title, styles.flex, styles.text_center]}
+                >
+                  {product.name}
+                </Text>
+              </View>
+              <View style={[styles.row, styles.around]}>
+                <Text style={[styles.card_title, styles.flex]}>Giá tiền:</Text>
+                <Text
+                  style={[styles.card_price, styles.flex, styles.text_center]}
+                >
+                  {product.price} đồng
+                </Text>
+              </View>
+              <View style={[styles.row, styles.around]}>
+                <Text style={[styles.card_title, styles.flex]}>Đánh giá:</Text>
+                <Rating
+                  value={product.rating}
+                  style={{ justifyContent: "center" }}
+                />
+              </View>
+              <View style={[styles.row, styles.around]}>
+                <Text style={[styles.card_title, styles.flex]}>
+                  Tình trạng:
+                </Text>
+                <Text
+                  style={[styles.card_title, styles.flex, styles.text_center]}
+                >
+                  Còn hàng
+                </Text>
+              </View>
+            </View>
           </View>
-          <View style={[styles.row, styles.around]}>
-            <Text style={[styles.card_title, styles.flex]}>Đánh giá:</Text>
-            <Rating
-              value={product.rating}
-              style={{ justifyContent: "center" }}
-            />
-          </View>
-          <View style={[styles.row, styles.around]}>
-            <Text style={[styles.card_title, styles.flex]}>Tình trạng:</Text>
-            <Text style={[styles.card_title, styles.flex, styles.text_center]}>
-              Còn hàng
-            </Text>
-          </View>
-        </View>
-      </View>
-      {/* more */}
-      <Text style={styles.title}>Chi tiết</Text>
+          {/* more */}
+          <Text style={styles.title}>Chi tiết</Text>
 
-      <View style={{ marginHorizontal: 10 }}>
-        <Text
-          onTextLayout={onTextLayout}
-          numberOfLines={textShown ? undefined : 3}
-          style={{ lineHeight: 21 }}
-        >
-          {product.description}
-        </Text>
+          <View style={{ marginHorizontal: 10 }}>
+            <Text
+              onTextLayout={onTextLayout}
+              numberOfLines={textShown ? undefined : 3}
+              style={{ lineHeight: 21 }}
+            >
+              {product.description}
+            </Text>
 
-        {lengthMore ? (
-          <Text
-            onPress={toggleNumberOfLines}
-            style={{ lineHeight: 21, marginTop: 4, color: COLORS.blueviolet }}
-          >
-            {textShown ? "Read less..." : "Read more..."}
-          </Text>
-        ) : null}
-      </View>
-      {/* button to add cart */}
-      <View style={{ alignItems: "center", marginVertical: 20 }}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.button_text}>Đặt hàng</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+            {lengthMore ? (
+              <Text
+                onPress={toggleNumberOfLines}
+                style={{
+                  lineHeight: 21,
+                  marginTop: 4,
+                  color: COLORS.blueviolet,
+                }}
+              >
+                {textShown ? "Read less..." : "Read more..."}
+              </Text>
+            ) : null}
+          </View>
+          {/* button to add cart */}
+          <View style={{ alignItems: "center", marginVertical: 20 }}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleCart()}
+            >
+              <Text style={styles.button_text}>Đặt hàng</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      )}
+    </View>
   );
 };
 
@@ -128,7 +174,7 @@ const styles = StyleSheet.create({
   around: {
     justifyContent: "space-around",
   },
-  container: {},
+  container: { width: "100%" },
   card_image: {
     alignItems: "center",
     maxHeight: 260,

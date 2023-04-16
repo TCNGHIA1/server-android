@@ -1,54 +1,70 @@
 import {
   FlatList,
-  Image,
   SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
-  TouchableOpacity,
   useWindowDimensions,
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import data from "../../database/dbProducts";
 
 import request from "../api/request";
 import ItemListProduct from "../components/ItemListProduct";
+import AppLoading from "../components/AppLoading";
 
 const Home = ({ navigation }) => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState({});
   const { width, height } = useWindowDimensions();
+
+  const [loading, setLoading] = useState(true);
+
+  const timeOut = setTimeout(() => {
+    setLoading(false);
+  }, 3000);
   useEffect(() => {
+    const getProdcuts = async () => {
+      try {
+        const req = await request.get("client/product/getAll");
+        if (req.data) {
+          setProducts(req.data);
+          timeOut;
+        } else {
+          setLoading(true);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
     getProdcuts();
-  }, [products]);
-  const getProdcuts = async () => {
-    try {
-      const req = await request.get("client/product/getAll");
-      setProducts(req.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    return () => {
+      clearTimeout(timeOut);
+    };
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="default" />
-
-      <View style={{ flex: 1 }}>
-        <Text style={styles.title}>Danh sách sản phẩm</Text>
-        <FlatList
-          data={products}
-          contentContainerStyle={{ alignItems: "center" }}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <ItemListProduct
-              item={item}
-              onPress={() => {
-                navigation.navigate("SingleProduct", { id: item._id });
-              }}
-            />
-          )}
-        />
-      </View>
+      {!loading ? (
+        <View style={{ flex: 1 }}>
+          <Text style={styles.title}>Danh sách sản phẩm</Text>
+          <FlatList
+            data={products}
+            contentContainerStyle={{ alignItems: "center" }}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => (
+              <ItemListProduct
+                item={item}
+                onPress={() => {
+                  navigation.navigate("SingleProduct", { id: item._id });
+                }}
+              />
+            )}
+          />
+        </View>
+      ) : (
+        <AppLoading />
+      )}
     </SafeAreaView>
   );
 };

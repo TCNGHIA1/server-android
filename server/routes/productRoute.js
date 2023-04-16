@@ -24,8 +24,11 @@ app.get("/list", (req, res) => {
     });
   });
 });
-app.get("/", (req, res) => {
+app.get("/add", (req, res) => {
   res.render("products/addP");
+});
+app.get("/cart", (req, res) => {
+  res.render("products/cartP");
 });
 //add
 const addproduct = (file, req, res) => {

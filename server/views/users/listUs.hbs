@@ -8,21 +8,20 @@
       <th>Họ và tên</th>
       <th>Email</th>
       <th>Mật khẩu</th>
-      <th>Số điện thoại</th>
-      <th>Địa chỉ</th>
       <th>Hành động</th>
     </tr>
   </thead>
 
   {{#each users}}
   <tr class="align-middle">
-    <td class="align-center"><img src="/img/users/{{this.imageURL}}" width="80" /></td>
+    <td class="align-center">{{#if this.imageURL}}<img src="/img/users/{{this.imageURL}}" width="80" /> {{else}}
+      <img src="/img/no_image.png" width="80" />
+      {{/if}}
+    </td>
     <td class="align-center">{{this.fullname}}</td>
     <td>{{this.email}}
     </td>
     <td>{{this.password}}</td>
-    <td>{{this.phone}}</td>
-    <td>{{this.address}}</td>
     <td>
       <div class="d-flex justify-content-around">
         <a href="/users/edit/{{this._id}}" class="btn btn-success btn-sm">Sửa</a>
